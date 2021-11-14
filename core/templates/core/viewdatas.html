@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}
+<title>download dataframes</title>
+{% endblock %}
+
+{% block pagetitle %}
+View your dataframes
+{% endblock %}
+
+
+{% block content %}
+
+{% for data in dataframes %}
+
+    <div class="card">
+    <div class="card-body">
+        <p>{{data.name}}</p>
+        <a class="btn btn-primary" href="{{data.dataframe.url}}" role="button">Download</a>
+    </div>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
