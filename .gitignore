@@ -131,3 +131,6 @@ dmypy.json
 env_webpandas/
 sample_inputs/
 .vscode/
+
+media/core/temp*
+media/core/*

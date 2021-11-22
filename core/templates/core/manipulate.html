@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}
+<title>download dataframes</title>
+{% endblock %}
+
+{% block pagetitle %}
+View your dataframes
+{% endblock %}
+
+
+
+{% block content %}
+
+{% autoescape off %}
+
+<div>
+
+    <button type="button" class="btn btn-primary" id='savebtn'>
+        <a>Save Table</a>
+    </button>
+
+</div>
+
+{{output}}
+
+{% endautoescape %}
+
+
+
+
+<script>
+
+    $(document).ready(function() {
+        let thcount = document.querySelectorAll('thead th');
+        $(thcount).each(function(index) {
+            $(`
+                <th data-col-index=`+index+` >
+                <button type="button" class="btn btn-primary findandreplace" title="Find and Replace">
+                        <i class="material-icons">
+                            find_replace
+                        </i>
+                    </button>
+                    
+                    <button type="button" class="btn btn-danger deletecol" title="Delete Column">
+                        <i class="material-icons">
+                            delete
+                        </i>
+                    </button>
+            </th>`).insertBefore('table > thead > tr:first');
+        });
+
+        const table = document.querySelector("table");
+        let secondColumnELements = getColumnElementsByIndexColumn(table, 1);
+        labelHeaders();
+
+    $('.findandreplace').click(function(){
+        let find = prompt('What do you want to find');
+        let replace = prompt('What do you want to replace it with');
+        
+        let indexColumn = $(this)
+            .parent().attr('data-col-index');
+        let data = getColumnElementsByIndexColumn(table, indexColumn);
+            $.each(data.slice(1), function(i){
+                string = data[i].textContent;
+                string2 = string.replaceAll(find,replace);
+                data[i].textContent = string2
+            });
+        });
+
+    
+
+    $('.deletecol').click(function(){
+        let indexColumn = $(this)
+            .parent().attr('data-col-index');
+        let data = getColumnElementsByIndexColumn(table, indexColumn);
+            $.each(data, function(i){
+                data[i].remove()
+            });
+    });
+
+    function labelHeaders() {
+        let c = document.querySelectorAll('thead tr th');
+        if ( c ) {
+            for (i = 0; i < c.length; i++){
+                c[i].setAttribute('data-col-index',i); // Used to refer to it in pandas data
+            }
+        }
+    }
+
+    /**
+    * 
+    * @param {Object} table: the table dom selector 
+    * @param {indexColumn} number: start count with 0 
+    * @returns Array with the column element selected by index column
+    */
+    function getColumnElementsByIndexColumn(table, indexColumn) {
+        const tableRows = table.querySelectorAll("tr");
+        let columnElements = [];
+
+        for (row of tableRows) {
+            let columnElement = row.children[indexColumn];
+            columnElements.push(columnElement);
+        }
+
+        return columnElements;
+    }
+    
+    $('#savebtn').click(function(){
+        
+
+        let datas = Object.create(null);
+        thcount = document.querySelectorAll('table thead tr th');
+        $(thcount).each(function(index){
+            
+            let data = getColumnElementsByIndexColumn(table, index);
+                subdatas = []
+                $.each(data, function(i){
+                    // console.log(data[i].textContent)
+                    subdatas.push(data[i].textContent)
+                    
+                })
+            datas[index]=subdatas
+            // datas.push([index,subdatas])
+        });
+        // string = JSON.stringify(datas);
+        console.log(datas)
+        console.log(JSON.stringify(datas))
+            $.ajax({
+                url: "{% url 'core:savedataframe' %}",
+                data:{
+                    'string': JSON.stringify(datas),
+                    'pathname': window.location.href
+                },
+                success: function(){
+                    alert('gucci')
+                }
+            });
+        });                
+    });
+                
+</script>
+                
+{% endblock %}

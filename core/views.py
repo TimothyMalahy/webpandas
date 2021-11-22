@@ -6,19 +6,26 @@ from core.models import *
 from core.forms import *
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+import json
 import os
 import pandas as pd
-from re import findall
-from bs4 import BeautifulSoup as Soup
 
 # Create your views here.
 
 def Home(request):
-    html = "<html><body>test</body></html>"
-    return HttpResponse(html, status=200)
+    '''
+    This is the home page
+    '''
+    context = {
+        '':'',
+    }
+    return render(request, 'core/home.html', context)
 
 
 class SubmitDataframe(CreateView):
+    '''
+    Form for submitting dataframes
+    '''
     model = DataFrame
     form_class = UploadDataFrame
     template_name = 'core/submitdataframe.html'
@@ -40,6 +47,9 @@ class SubmitDataframe(CreateView):
 
 
 def ViewDatas(request):
+    '''
+    This is to view all the dataframes owned by the user
+    '''
     dataframes = DataFrame.objects.filter(creator=request.user.id)
     context = {
         'dataframes':dataframes
@@ -48,6 +58,9 @@ def ViewDatas(request):
 
 
 def Manipulate(request, id):
+    '''
+    This is the editing page
+    '''
     obj = DataFrame.objects.filter(pk=id).first()
     df_web = obj.dataframe
     df = pd.read_csv(df_web)
@@ -61,45 +74,50 @@ def Manipulate(request, id):
     context = {
         'output':output,
     }
-    return render(request, 'core/output.html', context)
+    return render(request, 'core/manipulate.html', context)
 
 
-def Ajax_FindAndReplace(request, id, column):
-    obj = DataFrame.objects.filter(pk=id).first()
-    df_web = obj.dataframe
+
+def Ajax_SaveDataFrame(request):
+    '''
+    Passes dataframe back to panda to save it
+    '''
     
+    
+    path = 'media/core/temp/'+str(request.user.id)+'/outputs/'
+    isExist = os.path.exists(path)
+
+    if not isExist:
+        os.makedirs(path)
+
+    data = json.loads(request.GET['string'])
+    df = pd.DataFrame.from_dict(data)
+    df.columns = df.iloc[0]
+    df = df[1:]
+    df.to_csv(path+'output.csv')
+    pathid = request.GET['pathname'].split('/')[-2]
 
 
-# def download(request, path):
-#     file_path = os.path.join(settings.MEDIA_ROOT, path)
-#     if os.path.exists(file_path):
-#         with open(file_path, 'rb') as fh:
-#             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-#             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-#             return response
-#     raise Http404
 
+    obj = DataFrame.objects.filter(pk=pathid).first()
+    obj.dataframe = 'core/temp/'+str(request.user.id)+'/outputs/output.csv'
+    obj.save()
+    print(obj, obj.dataframe)
+    
+    
+    return HttpResponse("Success!") # Sending an success response
 
 
 def clean_df(df):
+    '''
+    Function to clean the dataframes submitting in SubmitDataFrame
+    '''
     # print(df)
     html = df.to_html(index=True)
     columns = len(df.columns)+1
     html = re.sub('border="1" ',"",html)
     html = re.sub('class="dataframe"', 'class="dataframe table table-bordered"', html)
-    #thead
-    # TODO find the nth occurence of the header to give the columns index
-    # TODO find a way to enter a new row in the Thead area to put the buttons above the columns names
     html = re.sub('<tr style="text-align: right;">','<tr>', html)
-    html = re.sub('<th>',
-    '''<th scope="col">
-            <button type="button" class="btn btn-primary findandreplace">
-                <a>find and replace</a>
-            </button>
-            <button type="button" class="btn btn-danger">
-                <i class="material-icons">delete</i>
-            </button>
-    ''',html, columns)
+
 
     return html
-
