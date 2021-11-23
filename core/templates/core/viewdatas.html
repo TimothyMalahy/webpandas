@@ -6,6 +6,16 @@
 <title>download dataframes</title>
 {% endblock %}
 
+{% block alerts %}
+
+    {% for alert in alerts %}
+        <div class="alert {{alert.alerttype}}" role="alert">
+            {{alert.message}}
+        </div>
+    {% endfor %}
+
+{% endblock %}
+
 {% block pagetitle %}
 View your dataframes
 {% endblock %}
@@ -13,7 +23,8 @@ View your dataframes
 
 {% block content %}
 
-{{baddataframes}}
+
+
 
 {% for frame in dataframes %}
 
