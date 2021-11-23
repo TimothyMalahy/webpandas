@@ -50,9 +50,12 @@ def ViewDatas(request):
     '''
     This is to view all the dataframes owned by the user
     '''
-    dataframes = DataFrame.objects.filter(creator=request.user.id)
+    dataframes = DataFrame.objects.filter(creator=request.user.id).exclude(dataframe__exact='')
+    baddataframes = len(DataFrame.objects.filter(creator=request.user.id).filter(dataframe__exact=''))
+    
     context = {
-        'dataframes':dataframes
+        'dataframes':dataframes,
+        'baddataframes':baddataframes
     }
     return render(request, 'core/viewdatas.html', context) 
 

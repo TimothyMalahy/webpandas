@@ -13,14 +13,18 @@ View your dataframes
 
 {% block content %}
 
+{{baddataframes}}
+
 {% for frame in dataframes %}
 
-    <div class="card">
-    <div class="card-body">
-        <p>{{frame.name}}</p>
-        <a class="btn btn-primary" href="{{frame.dataframe.url}}" role="button">Download</a>
-        <a class="btn btn-primary" href="{% url 'core:manipulate' id=frame.id %}" role="button">Manipulate Data</a>
-    </div>
+    <div class="card">  
+        <div class="card-header">
+            {{frame.name}}
+        </div>
+        <div class="card-body">
+            <a class="btn btn-primary" href="{{frame.dataframe.url}}" role="button">Download</a>
+            <a class="btn btn-primary" href="{% url 'core:manipulate' id=frame.id %}" role="button">Manipulate Data</a>
+        </div>
     </div>
 
 {% endfor %}

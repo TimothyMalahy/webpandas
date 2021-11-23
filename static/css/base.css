@@ -1,10 +1,22 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px; /* Margin bottom by footer height */
+}
+
 .site-footer
 {
-  background-color:#26272b;
+  position:absolute;
+  background-color:#343A40;
+  bottom: 0;
+  width: 100%;
   padding:45px 0 20px;
   font-size:15px;
   line-height:24px;
-  color:#737373;
+  color:#FFFFFF;
 }
 .site-footer hr
 {
@@ -43,7 +55,7 @@
 }
 .footer-links a
 {
-  color:#737373
+  color:#FFFFFF
 }
 .footer-links a:active,.footer-links a:focus,.footer-links a:hover
 {
@@ -160,4 +172,8 @@
     margin-right:0;
     font-weight:600
   }
+}
+
+.footer-underline{
+  text-underline-position: under;
 }
