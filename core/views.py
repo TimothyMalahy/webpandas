@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http.response import HttpResponse, Http404
 from django.utils import datastructures
 from django.views.generic import UpdateView, CreateView, ListView, DetailView
@@ -53,9 +54,15 @@ def ViewDatas(request):
     dataframes = DataFrame.objects.filter(creator=request.user.id).exclude(dataframe__exact='')
     baddataframes = len(DataFrame.objects.filter(creator=request.user.id).filter(dataframe__exact=''))
     
+    alerts = []
+
+    alerts.append({'alerttype':'alert-danger','message':f'You have {baddataframes} bad data frames'})
+
+
     context = {
         'dataframes':dataframes,
-        'baddataframes':baddataframes
+        'baddataframes':baddataframes,
+        'alerts':alerts,
     }
     return render(request, 'core/viewdatas.html', context) 
 
