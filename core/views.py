@@ -56,7 +56,8 @@ def ViewDatas(request):
     
     alerts = []
 
-    alerts.append({'alerttype':'alert-danger','message':f'You have {baddataframes} bad data frames'})
+    if baddataframes != 0:
+        alerts.append({'alerttype':'alert-danger','message':f'You have {baddataframes} bad data frames'})
 
 
     context = {
