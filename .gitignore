@@ -134,3 +134,4 @@ sample_inputs/
 
 media/core/temp*
 media/core/*
+env_*
