@@ -1,0 +1,1 @@
+web: gunicorn webpandas.wsgi --log-file -
