@@ -12,8 +12,7 @@ class Command(BaseCommand):
             username = f"admin{randomness}"
             if not User.objects.filter(
                     username=username,
-                    email='admin@example.com').exists() and not User.objects.filter(
-                    is_superuser=True).exists():
+                    email='admin@example.com').exists():
                 print("admin user not found, creating one")
                 email = 'admin@example.com'
                 new_password = get_random_string(10)
