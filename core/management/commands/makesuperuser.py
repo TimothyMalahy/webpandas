@@ -7,13 +7,15 @@ User = get_user_model()
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        print([uu.username for uu in User.objects.all()])
         try:
-            randomness = get_random_string(10)
-            username = f"admin{randomness}"
+            u = None
             if not User.objects.filter(
-                    username=username,
-                    email='admin@example.com').exists():
+                    username='admin',
+                    email='admin@example.com').exists() and not User.objects.filter(
+                    is_superuser=True).exists():
                 print("admin user not found, creating one")
+                username = 'admin'
                 email = 'admin@example.com'
                 new_password = get_random_string(10)
 
@@ -23,5 +25,6 @@ class Command(BaseCommand):
                 print(f"===================================")
             else:
                 print("admin user found. Skipping super user creation")
+            print(u)
         except Exception as e:
             print(f"There was an error: {e}")
