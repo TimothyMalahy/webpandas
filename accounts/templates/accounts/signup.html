@@ -1,0 +1,27 @@
+
+
+{% extends 'base.html' %}
+
+  {% load crispy_forms_tags %}
+  
+  {% block title %}
+  <title>Web Pandas | Sign Up</title>
+  {% endblock %}
+  
+  {% block pagetitle %}
+  Sign Up Below
+  {% endblock %}
+  
+  
+  
+  {% block content %}
+  
+  <div class='container'>
+      <div class='pb-5'>
+              {% crispy form %}
+      </div>
+  </div>
+  
+  {% endblock %}
+
+

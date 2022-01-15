@@ -1,8 +1,11 @@
 from django.contrib import messages
+from django.contrib.auth import login, authenticate
 from django.http.response import HttpResponse, Http404
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.forms import UserCreationForm
 from django.utils import datastructures
 from django.views.generic import UpdateView, CreateView, ListView, DetailView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from core.models import *
 from core.forms import *
 from django.http import HttpResponseRedirect
@@ -28,7 +31,7 @@ class SubmitDataframe(CreateView):
     Form for submitting dataframes
     '''
     model = DataFrame
-    form_class = UploadDataFrame
+    form_class = UploadDataFrameForm
     template_name = 'core/submitdataframe.html'
 
 
@@ -45,7 +48,6 @@ class SubmitDataframe(CreateView):
         form = form.cleaned_data
         DataFrame.objects.create(creator=form['creator'], name=form['name'], dataframe=form['dataframe'])
         return HttpResponseRedirect(reverse('core:submitdataframe'))
-
 
 def ViewDatas(request):
     '''
@@ -119,6 +121,8 @@ def Ajax_SaveDataFrame(request):
     return HttpResponse("Success!") # Sending an success response
 
 
+
+
 def clean_df(df):
     '''
     Function to clean the dataframes submitting in SubmitDataFrame
@@ -132,3 +136,4 @@ def clean_df(df):
 
 
     return html
+

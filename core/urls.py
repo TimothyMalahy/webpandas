@@ -9,5 +9,5 @@ urlpatterns = [
     path('submit/', views.SubmitDataframe.as_view(), name='submitdataframe'),
     path('view/', views.ViewDatas, name='viewdatas'),
     path('manipulate/<id>/', views.Manipulate, name='manipulate'),
-    path('ajax/savedataframe', views.Ajax_SaveDataFrame, name='savedataframe')
+    path('ajax/savedataframe', views.Ajax_SaveDataFrame, name='savedataframe'),
 ]
